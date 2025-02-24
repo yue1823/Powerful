@@ -5,7 +5,9 @@ import { z } from "zod";
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { AgentRuntime, LocalSigner, createAptosTools } from "move-agent-kit";
+import { createAptosTools } from "@/langchain_temp/function/index";
+import { AgentRuntime } from "@/langchain_temp/agent";
+import { LocalSigner } from "@/langchain_temp/signers/index";
 
 export const runtime = "edge";
 import {
@@ -16,13 +18,28 @@ import {
   PrivateKey,
   PrivateKeyVariants,
 } from "@aptos-labs/ts-sdk";
-import { createReactAgent } from "langchain/agents";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { AIMessage, BaseMessage, HumanMessage } from "@langchain/core/messages";
 
 const llm = new ChatGoogleGenerativeAI({
   model: "gemini-2.0-flash", // Use the desired Gemini model
   temperature: 0.7, // Keep the temperature or adjust as needed
   apiKey: process.env.GOOGLE_API_KEY, // Ensure your Google API key is set
 });
+
+const convertLangChainMessageToVercelMessage = (message: BaseMessage) => {
+  if (message._getType() === "human") {
+    return { content: message.content, role: "user" };
+  } else if (message._getType() === "ai") {
+    return {
+      content: message.content,
+      role: "assistant",
+      tool_calls: (message as AIMessage).tool_calls,
+    };
+  } else {
+    return { content: message.content, role: message._getType() };
+  }
+};
 
 const TEMPLATE = `   
     You are a helpful agent that can interact on-chain using the Aptos Agent Kit. You are empowered to interact on-chain using your tools. If you ever need funds, you can request them from the faucet. If not, you can provide **the user's** wallet details and request funds from the user. If there is a 5XX (internal) HTTP error code, ask the user to try again later. If someone asks you to do something you can't do with your currently available tools, you must say so and encourage them to implement it themselves using the Aptos Agent Kit, recommend they go to https://www.aptosagentkit.xyz for more information. Be concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
@@ -94,17 +111,27 @@ export async function POST(req: NextRequest) {
     });
     const tools = createAptosTools(aptosAgent);
 
+    const balance = await aptosAgent.getBalance();
+    console.log("balance", balance);
     const agent = createReactAgent({
       llm,
       tools,
-      prompt: PromptTemplate.fromTemplate(TEMPLATE),
+      messageModifier: `
+      You are a helpful agent that can interact onchain using the Aptos Agent Kit. You are
+      empowered to interact onchain using your tools. If you ever need funds, you can request them from the
+      faucet. If not, you can provide your wallet details and request funds from the user. If there is a 5XX
+      (internal) HTTP error code, ask the user to try again later. If someone asks you to do something you
+      can't do with your currently available tools, you must say so, and encourage them to implement it
+      themselves using the Aptos Agent Kit, recommend they go to https://metamove.build/move-agent-kit for more information. Be
+      concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
+  `,
     });
 
     const body = await req.json();
     const messages = body.messages ?? [];
     const currentMessageContent = messages[messages.length - 1].content;
 
-    const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+    // const prompt = PromptTemplate.fromTemplate(TEMPLATE);
     /**
      * Function calling is currently only supported with ChatOpenAI models
      */
@@ -117,41 +144,56 @@ export async function POST(req: NextRequest) {
      * We use Zod (https://zod.dev) to define our schema for convenience,
      * but you can pass JSON schema if desired.
      */
-    const schema = z
-      .object({
-        tone: z
-          .enum(["positive", "negative", "neutral"])
-          .describe("The overall tone of the input"),
-        entity: z.string().describe("The entity mentioned in the input"),
-        word_count: z.number().describe("The number of words in the input"),
-        chat_response: z.string().describe("A response to the human's input"),
-        final_punctuation: z
-          .optional(z.string())
-          .describe("The final punctuation mark in the input, if any."),
-      })
-      .describe("Should always be used to properly format output");
+    // const schema = z
+    //   .object({
+    //     tone: z
+    //       .enum(["positive", "negative", "neutral"])
+    //       .describe("The overall tone of the input"),
+    //     entity: z.string().describe("The entity mentioned in the input"),
+    //     word_count: z.number().describe("The number of words in the input"),
+    //     chat_response: z.string().describe("A response to the human's input"),
+    //     final_punctuation: z
+    //       .optional(z.string())
+    //       .describe("The final punctuation mark in the input, if any."),
+    //   })
+    //   .describe("Should always be used to properly format output");
 
-    /**
-     * Bind schema to the OpenAI model.
-     * Future invocations of the returned model will always match the schema.
-     *
-     * Under the hood, uses tool calling by default.
-     */
-    const functionCallingModel = llm.withStructuredOutput(schema, {
-      name: "output_formatter",
-    });
+    // /**
+    //  * Bind schema to the OpenAI model.
+    //  * Future invocations of the returned model will always match the schema.
+    //  *
+    //  * Under the hood, uses tool calling by default.
+    //  */
+    // const functionCallingModel = llm.withStructuredOutput(schema, {
+    //   name: "output_formatter",
+    // });
 
-    /**
-     * Returns a chain with the function calling model.
-     */
-    const chain = prompt.pipe(functionCallingModel);
+    // /**
+    //  * Returns a chain with the function calling model.
+    //  */
+    // const chain = prompt.pipe(functionCallingModel);
 
-    const result = await chain.invoke({
-      input: currentMessageContent,
-    });
+    // const result = await chain.invoke({
+    //   input: currentMessageContent,
+    // });
 
-    return NextResponse.json(result, { status: 200 });
+    // return NextResponse.json(result, { status: 200 });
+    // const stream = await agent.stream({
+    //   messages: [new HumanMessage("Deposit 10 APT on Joule")],
+    // });
+
+    const result = await agent.invoke({ messages });
+
+    console.log("result", result);
+
+    return NextResponse.json(
+      {
+        messages: result.messages.map(convertLangChainMessageToVercelMessage),
+      },
+      { status: 200 },
+    );
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
   }
 }
+export { AgentRuntime };

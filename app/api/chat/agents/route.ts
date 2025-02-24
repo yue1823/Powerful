@@ -12,6 +12,7 @@ import {
   HumanMessage,
   SystemMessage,
 } from "@langchain/core/messages";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
 export const runtime = "edge";
 
@@ -65,16 +66,20 @@ export async function POST(req: NextRequest) {
     // Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
     // You can remove this or use a different tool instead.
     const tools = [new Calculator(), new SerpAPI()];
-    const chat = new ChatOpenAI({
-      model: "gpt-4o-mini",
-      temperature: 0,
+    // const chat = new ChatOpenAI({
+    //   model: "gpt-4o-mini",
+    //   temperature: 0,
+    // });
+    const llm = new ChatGoogleGenerativeAI({
+      model: "gemini-2.0-flash", // Use the desired Gemini model
+      temperature: 0.7, // Keep the temperature or adjust as needed
+      apiKey: process.env.GOOGLE_API_KEY, // Ensure your Google API key is set
     });
-
     /**
      * Use a prebuilt LangGraph agent.
      */
     const agent = createReactAgent({
-      llm: chat,
+      llm: llm,
       tools,
       /**
        * Modify the stock prompt in the prebuilt agent. See docs
