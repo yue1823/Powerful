@@ -78,7 +78,9 @@ export default function AgentsPage() {
     <ChatWindow
       endpoint="api/chat/metamove"
       emptyStateComponent={InfoCard}
-      placeholder={`No matter what you type here, I'll always return the same JSON object with the same structure!`}
+      placeholder={`
+                'I\'ve got a nose for finding the right documents! Ask, "What is a document loader?"'
+                `}
       emoji="🧱"
     />
   );

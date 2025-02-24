@@ -1,6 +1,6 @@
 import { AccountAddress } from "@aptos-labs/ts-sdk"
 import { Tool } from "langchain/tools"
-import { type AgentRuntime, parseJson } from ".."
+import { type AgentRuntime, parseJson } from "../.."
 
 export class JouleGetUserPosition extends Tool {
 	name = "joule_get_user_position"

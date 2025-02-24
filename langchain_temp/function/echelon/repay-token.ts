@@ -1,6 +1,6 @@
 import { type MoveStructId, convertAmountFromHumanReadableToOnChain } from "@aptos-labs/ts-sdk"
 import { Tool } from "langchain/tools"
-import { type AgentRuntime, parseJson } from ".."
+import { type AgentRuntime, parseJson } from "../.."
 import { getTokenByTokenAddress, getTokenByTokenName } from "../../utils/get-pool-address-by-token-name"
 
 export class EchelonRepayTokenTool extends Tool {

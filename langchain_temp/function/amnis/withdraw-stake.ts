@@ -1,6 +1,6 @@
 import { AccountAddress, convertAmountFromHumanReadableToOnChain } from "@aptos-labs/ts-sdk"
 import { Tool } from "langchain/tools"
-import { type AgentRuntime, parseJson } from ".."
+import { type AgentRuntime, parseJson } from "../.."
 
 export class AmnisWithdrawStakeTool extends Tool {
 	name = "amnis_withdraw_stake"

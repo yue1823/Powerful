@@ -1,6 +1,6 @@
 import { convertAmountFromHumanReadableToOnChain } from "@aptos-labs/ts-sdk"
 import { Tool } from "langchain/tools"
-import { type AgentRuntime, parseJson } from ".."
+import { type AgentRuntime, parseJson } from "../.."
 
 export class JouleWithdrawTokenTool extends Tool {
 	name = "joule_withdraw_token"

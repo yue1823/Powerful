@@ -1,5 +1,5 @@
 import { Tool } from "langchain/tools"
-import { type AgentRuntime, parseJson } from ".."
+import { type AgentRuntime, parseJson } from "../.."
 
 export class JouleGetPoolDetails extends Tool {
 	name = "joule_get_pool_details"

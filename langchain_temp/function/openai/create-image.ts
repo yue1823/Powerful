@@ -1,5 +1,5 @@
 import { Tool } from "langchain/tools"
-import { type AgentRuntime, parseJson } from ".."
+import { type AgentRuntime, parseJson } from "../.."
 
 export class OpenAICreateImageTool extends Tool {
 	name = "openai_create_image"

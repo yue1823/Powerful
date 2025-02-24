@@ -1,5 +1,5 @@
 import { Tool } from "langchain/tools"
-import { type AgentRuntime, parseJson } from ".."
+import { type AgentRuntime, parseJson } from "../.."
 
 /**
  * post a tweet and mint an nft on 2tag

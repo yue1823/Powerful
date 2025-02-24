@@ -1,5 +1,5 @@
 import { Tool } from "langchain/tools"
-import { type AgentRuntime, parseJson } from ".."
+import { type AgentRuntime, parseJson } from "../.."
 
 export class AptosCreateTokenTool extends Tool {
 	name = "aptos_create_token"

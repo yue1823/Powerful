@@ -115,8 +115,8 @@ export const createAptosTools = (
     new EchelonRepayTokenTool(agent),
     new EchelonBorrowTokenTool(agent),
     // Twotag tools
-    // new TweetNFTTool(agent),
-    // new Read_public_tweet(agent),
+    new TweetNFTTool(agent),
+    new Read_public_tweet(agent),
     new Get_twotag_nft(agent),
   ];
 
