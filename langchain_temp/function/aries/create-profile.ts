@@ -1,5 +1,5 @@
 import { Tool } from "langchain/tools"
-import type { AgentRuntime } from ".."
+import type { AgentRuntime } from "../../agent"
 
 export class AriesCreateProfileTool extends Tool {
 	name = "aries_create_profile"

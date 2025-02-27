@@ -48,5 +48,5 @@ export type ToolsNameList =
 
 export type SignedTransactionResponse = {
 	senderAuthenticator?: AccountAuthenticator
-	signature?: Uint8Array<ArrayBufferLike>
+	signature?: Uint8Array
 }

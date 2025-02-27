@@ -1,5 +1,5 @@
 import { Tool } from "langchain/tools";
-import { type AgentRuntime } from "../../../app/api/chat/metamove/route";
+import { type AgentRuntime } from "../../agent";
 
 /**
  * get hashtags from api endpoint
