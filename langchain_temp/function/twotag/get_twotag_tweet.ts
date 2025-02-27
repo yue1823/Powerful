@@ -6,10 +6,12 @@ import { type AgentRuntime } from "../../../app/api/chat/metamove/route"
  * @returns string[] - nft token id []
  */
 
-export class Get_twotag_nft extends Tool {
+export class GetTwotagNFT extends Tool {
 	name = "get_twotag_tweet"
 	description = `
-    This tool retrieves the TwoTag Tweet collection NFTs owned by the user. It fetches the token ID, URL, and description of each NFT in their wallet.  This tool does not require any input.
+    This tool retrieves the TwoTag Tweet collection NFTs owned by the user. 
+	It fetches the token ID, URL, and description of each NFT in their wallet.  
+	This tool does not require any input.
     `
 
 	constructor(private agent: AgentRuntime) {

@@ -51,7 +51,6 @@ import {
   stakeTokenWithThala,
   unstakeAPTWithThala,
 } from "./tools/thala";
-import { two_tag_tweet } from "./tools/twotag";
 
 import {
   borrowTokenWithEchelon,
@@ -63,6 +62,9 @@ import { stakeTokenWithEcho, unstakeTokenWithEcho } from "./tools/echo";
 import { createImage } from "./tools/openai";
 import { get_twotag_nft } from "./tools/twotag/get_twotag_nft";
 import { read_public_tweet } from "./tools/twotag/read_public_tweet";
+import { get_hashtags } from "./tools/twotag/get_hashtags";
+import { generate_image } from "./tools/twotag/generate_image";
+import { two_tag_tweet_nft } from "./tools/twotag/two_tag_tweet_nft";
 import { getTokenByTokenName } from "./utils/get-pool-address-by-token-name";
 
 const aptosConfig = new AptosConfig({
@@ -78,15 +80,13 @@ export class AgentRuntime {
   constructor(
     account: BaseSigner,
     aptos: Aptos,
+    to_address: string,
     config?: any,
-    to_address?: string,
   ) {
     this.account = account;
     this.aptos = new Aptos(aptosConfig);
     this.config = config ? config : {};
-    this.to_address = to_address
-      ? to_address
-      : "0xd05905613a1c012ef232910d7de4684a4ca7eb6fc41b81d76b1c6919ec888776";
+    this.to_address = to_address;
   }
 
   async getPythData() {
@@ -398,8 +398,8 @@ export class AgentRuntime {
   }
 
   // 2tag
-  two_tag_tweet() {
-    return two_tag_tweet(this, this.to_address);
+  two_tag_tweet_nft(keywords: string) {
+    return two_tag_tweet_nft(this, keywords, this.to_address);
   }
 
   read_public_tweet(nft_token_id: string) {
@@ -408,5 +408,13 @@ export class AgentRuntime {
 
   get_twotag_nft() {
     return get_twotag_nft(this, this.to_address);
+  }
+
+  get_hashtags(keywords: string) {
+    return get_hashtags(keywords, this.to_address);
+  }
+
+  generate_image(prompt: string) {
+    return generate_image(prompt, this.to_address);
   }
 }

@@ -27,7 +27,19 @@ async function generateTweet(
   hashtags: string[],
 ): Promise<string> {
   try {
-    const prompt = `Please create an engaging tweet related to Web3 and crypto, specifically expressing a positive outlook on the future of Aptos and Move. Base the tweet on the following hashtags, ensuring that all hashtags are included and only output the tweet text, without any other meaningless prefixes, suffixes, or explanations: ${hashtags.join(" ")}`;
+    const prompt = `
+    Please create an engaging tweet with around 100 words related to Web3 and crypto,
+    specifically expressing a positive outlook on the future of Aptos and Move.
+    **IMPORTANT**
+    - Maximum 5 hashtags ${hashtags.join(" ")} are included.
+    - Do not include any other hashtags.
+    - Do not include any other text.
+    - Do not include any other prefixes, suffixes, or explanations.
+    - Do not include any other information.
+    - Do not include any other comments.
+    - Do not include any other notes.
+    - Do not include AI response.
+    `;
     const result = await llm.call([prompt]);
 
     return result.content.toString();
@@ -37,8 +49,9 @@ async function generateTweet(
   }
 }
 
-export async function two_tag_tweet(
+export async function two_tag_tweet_nft(
   agent: AgentRuntime,
+  keywords: string,
   account: string,
 ): Promise<{ transaction: string; image: string; tweet_text: string }> {
   try {
@@ -46,24 +59,25 @@ export async function two_tag_tweet(
       //const externalApiResponse = await fetch("YOUR_EXTERNAL_API_ENDPOINT");
       //const externalApiData = await externalApiResponse.json();
 
-      // const hashtagsResponse = await fetch("https://essaa-creatolens-cdr-media-service-sit-y7nazd37ga-df.a.run.app/api/metamove/hashtags", {
-      // 	method: "POST",
-      // 	body: JSON.stringify({
-      // 		user_id: "web3/" + account,
-      // 	}),
-      // })
+      const hashtagsResponse = await fetch(
+        `https://essaa-creatolens-hashtag-service-sit-398252563427.asia-east2.run.app/predict?input=${keywords}&key=${account}&k=5`,
+        {
+          method: "GET",
+        },
+      );
 
-      const hashtags = ["#hackathon", "#Aptos", "#Meta Move", "#Bullish"];
-      console.log("account", account);
-
+      const hashtags = await hashtagsResponse.json();
+      const result: string[] = hashtags.hashtags.map(
+        (data: { hashtag: string; acc: number }) => data.hashtag,
+      );
       const response = await fetch(
         "https://essaa-creatolens-cdr-media-service-sit-y7nazd37ga-df.a.run.app/api/metamove/image/prompt",
         {
           method: "POST",
           body: JSON.stringify({
-            prompt: hashtags.join(" "),
+            prompt: result.join(" "),
             aspect_ratio: "4:3",
-            negative_prompt: "no text, no watermark, no logo",
+            negative_prompt: "text, watermark, logo",
             user_id: "web3/" + account,
           }),
         },
@@ -71,9 +85,7 @@ export async function two_tag_tweet(
 
       const imageUrl = (await response.json()).image_url;
 
-      console.log("imageUrl", imageUrl);
-
-      const tweetContent = await generateTweet(llm, hashtags);
+      const tweetContent = await generateTweet(llm, result);
       // console.log("tweetContent:", tweetContent);
 
       const output = tweetContent + imageUrl;
@@ -83,7 +95,7 @@ export async function two_tag_tweet(
         data: {
           function:
             "0xac314e37a527f927ee7600ac704b1ee76ff95ed4d21b0b7df1c58be8872da8f0::post::tweet",
-          functionArguments: [hashtags, tweetContent, account, imageUrl],
+          functionArguments: [result, tweetContent, account, imageUrl],
         },
       });
 

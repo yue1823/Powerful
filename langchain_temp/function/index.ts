@@ -42,7 +42,7 @@ import {
   EchelonWithdrawTokenTool,
 } from "./echelon";
 import { EchoStakeTokenTool, EchoUnstakeTokenTool } from "./echo";
-import { OpenAICreateImageTool } from "./openai";
+// import { OpenAICreateImageTool } from "./openai";
 import { PanoraSwapTool } from "./panora";
 import {
   ThalaAddLiquidityTool,
@@ -52,9 +52,11 @@ import {
   ThalaStakeTokenTool,
   ThalaUnstakeTokenTool,
 } from "./thala";
-import { Get_twotag_nft } from "./twotag/get_nft_token_id";
-import { TweetNFTTool } from "./twotag/post_and_mint";
+import { GetTwotagNFT } from "./twotag/get_twotag_tweet";
+import { TweetNFTTool } from "./twotag/two_tag_tweet_nft";
 import { Read_public_tweet } from "./twotag/read_public_tweet";
+import { GetHashtags } from "./twotag/get_hashtags";
+import { GenerateImage } from "./twotag/generate_image";
 
 export const createAptosTools = (
   agent: AgentRuntime,
@@ -105,7 +107,7 @@ export const createAptosTools = (
     // Panora tools
     new PanoraSwapTool(agent),
     // OpenAI tools
-    new OpenAICreateImageTool(agent),
+    // new OpenAICreateImageTool(agent),
     // Echo tools
     new EchoStakeTokenTool(agent),
     new EchoUnstakeTokenTool(agent),
@@ -117,7 +119,9 @@ export const createAptosTools = (
     // Twotag tools
     new TweetNFTTool(agent),
     new Read_public_tweet(agent),
-    new Get_twotag_nft(agent),
+    new GetTwotagNFT(agent),
+    new GetHashtags(agent),
+    new GenerateImage(agent),
   ];
 
   return config.filter
@@ -136,6 +140,95 @@ export * from "./echelon";
 export * from "./echo";
 export * from "./liquidswap";
 export * from "./panora";
-export * from "./openai";
+// export * from "./openai";
 export * from "./thala";
 export * from "./twotag";
+
+export const toolsByName = {
+  get_hashtags: (agent: AgentRuntime) => new GetHashtags(agent),
+  generate_image: (agent: AgentRuntime) => new GenerateImage(agent),
+  get_twotag_tweet: (agent: AgentRuntime) => new GetTwotagNFT(agent),
+  read_public_tweet: (agent: AgentRuntime) => new Read_public_tweet(agent),
+  two_tag_tweet_nft: (agent: AgentRuntime) => new TweetNFTTool(agent),
+
+  // Aptos tools
+  aptos_balance: (agent: AgentRuntime) => new AptosBalanceTool(agent),
+  aptos_get_wallet_address: (agent: AgentRuntime) =>
+    new AptosAccountAddressTool(agent),
+  aptos_transfer_token: (agent: AgentRuntime) =>
+    new AptosTransferTokenTool(agent),
+  aptos_burn_token: (agent: AgentRuntime) => new AptosBurnTokenTool(agent),
+  aptos_transaction: (agent: AgentRuntime) => new AptosTransactionTool(agent),
+  aptos_get_token_detail: (agent: AgentRuntime) =>
+    new AptosGetTokenDetailTool(agent),
+  aptos_mint_token: (agent: AgentRuntime) => new AptosMintTokenTool(agent),
+  aptos_create_token: (agent: AgentRuntime) => new AptosCreateTokenTool(agent),
+  aptos_get_token_price: (agent: AgentRuntime) =>
+    new AptosGetTokenPriceTool(agent),
+
+  // Amnis tools
+  amnis_stake: (agent: AgentRuntime) => new AmnisStakeTool(agent),
+  amnis_withdraw_stake: (agent: AgentRuntime) =>
+    new AmnisWithdrawStakeTool(agent),
+
+  // Joule tools
+  joule_lend_token: (agent: AgentRuntime) => new JouleLendTokenTool(agent),
+  joule_withdraw_token: (agent: AgentRuntime) =>
+    new JouleWithdrawTokenTool(agent),
+  joule_borrow_token: (agent: AgentRuntime) => new JouleBorrowTokenTool(agent),
+  joule_repay_token: (agent: AgentRuntime) => new JouleRepayTokenTool(agent),
+  joule_get_pool_details: (agent: AgentRuntime) =>
+    new JouleGetPoolDetails(agent),
+  joule_get_user_position: (agent: AgentRuntime) =>
+    new JouleGetUserPosition(agent),
+  joule_get_user_all_positions: (agent: AgentRuntime) =>
+    new JouleGetUserAllPositions(agent),
+
+  // LiquidSwap tools
+  liquidswap_create_pool: (agent: AgentRuntime) =>
+    new LiquidSwapCreatePoolTool(agent),
+  liquidswap_add_liquidity: (agent: AgentRuntime) =>
+    new LiquidSwapAddLiquidityTool(agent),
+  liquidswap_remove_liquidity: (agent: AgentRuntime) =>
+    new LiquidSwapRemoveLiquidityTool(agent),
+  liquidswap_swap: (agent: AgentRuntime) => new LiquidSwapSwapTool(agent),
+
+  // Panora tools
+  panora_swap: (agent: AgentRuntime) => new PanoraSwapTool(agent),
+
+  // OpenAI tools
+  // openai_generate_image: (agent: AgentRuntime) =>
+  //   new OpenAICreateImageTool(agent),
+
+  // Echo tools
+  echo_stake_token: (agent: AgentRuntime) => new EchoStakeTokenTool(agent),
+  echo_unstake_token: (agent: AgentRuntime) => new EchoUnstakeTokenTool(agent),
+
+  // Echelon tools
+  echelon_lend_token: (agent: AgentRuntime) => new EchelonLendTokenTool(agent),
+  echelon_withdraw_token: (agent: AgentRuntime) =>
+    new EchelonWithdrawTokenTool(agent),
+  echelon_borrow_token: (agent: AgentRuntime) =>
+    new EchelonBorrowTokenTool(agent),
+  echelon_repay_token: (agent: AgentRuntime) =>
+    new EchelonRepayTokenTool(agent),
+
+  // Thala tools
+  thala_add_liquidity: (agent: AgentRuntime) =>
+    new ThalaAddLiquidityTool(agent),
+  thala_remove_liquidity: (agent: AgentRuntime) =>
+    new ThalaRemoveLiquidityTool(agent),
+  thala_mint_mod: (agent: AgentRuntime) => new ThalaMintMODTool(agent),
+  thala_redeem_mod: (agent: AgentRuntime) => new ThalaRedeemMODTool(agent),
+  thala_stake_token: (agent: AgentRuntime) => new ThalaStakeTokenTool(agent),
+  thala_unstake_token: (agent: AgentRuntime) =>
+    new ThalaUnstakeTokenTool(agent),
+
+  // Aries tools
+  aries_create_profile: (agent: AgentRuntime) =>
+    new AriesCreateProfileTool(agent),
+  aries_withdraw: (agent: AgentRuntime) => new AriesWithdrawTool(agent),
+  aries_borrow: (agent: AgentRuntime) => new AriesBorrowTool(agent),
+  aries_lend: (agent: AgentRuntime) => new AriesLendTool(agent),
+  aries_repay: (agent: AgentRuntime) => new AriesRepayTool(agent),
+};

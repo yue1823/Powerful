@@ -34,7 +34,6 @@ export type ToolsNameList =
 	| "thala_unstake_token"
 	| "thala_stake_token"
 	| "panora_aggregator_swap"
-	| "openai_create_image"
 	| "echo_stake_token"
 	| "echo_unstake_token"
 	| "echelon_lend_token"
@@ -42,6 +41,10 @@ export type ToolsNameList =
 	| "echelon_borrow_token"
 	| "echelon_repay_token"
 	| "two_tag_tweet_nft"
+	| "generate_image"
+	| "get_hashtags"
+	| "read_public_tweet"
+	| "get_twotag_nft"
 
 export type SignedTransactionResponse = {
 	senderAuthenticator?: AccountAuthenticator

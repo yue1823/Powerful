@@ -1,13 +1,25 @@
 import "./globals.css";
-import { Public_Sans } from "next/font/google";
+import { Geist, Geist_Mono, Public_Sans } from "next/font/google";
 import { ActiveLink } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { GithubIcon } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { WalletProvider } from "@/components/wallet/WalletProvider";
+import { ReactQueryClientProvider } from "@/components/wallet/ReactQueryClientProvider";
+import { AutoConnectProvider } from "@/components/wallet/AutoConnectProvider";
+import { WalletConnectionHandler } from "@/components/wallet/User_store";
+import Wallet from "@/components/wallet/client_wallet";
 
 const publicSans = Public_Sans({ subsets: ["latin"] });
-
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 const Logo = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -30,83 +42,91 @@ const Logo = () => (
   </svg>
 );
 
+const Provider = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <AutoConnectProvider>
+      <ReactQueryClientProvider>
+        <WalletProvider>
+          <html lang="en">
+            <body
+              className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            >
+              <WalletConnectionHandler>{children}</WalletConnectionHandler>
+            </body>
+          </html>
+        </WalletProvider>
+      </ReactQueryClientProvider>
+    </AutoConnectProvider>
+  );
+};
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <title>LangChain + Next.js Template</title>
-        <link rel="shortcut icon" href="/images/favicon.ico" />
-        <meta
-          name="description"
-          content="Starter template showing how to use LangChain in Next.js projects. See source code and deploy your own at https://github.com/langchain-ai/langchain-nextjs-template!"
-        />
-        <meta property="og:title" content="LangChain + Next.js Template" />
-        <meta
-          property="og:description"
-          content="Starter template showing how to use LangChain in Next.js projects. See source code and deploy your own at https://github.com/langchain-ai/langchain-nextjs-template!"
-        />
-        <meta property="og:image" content="/images/og-image.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="LangChain + Next.js Template" />
-        <meta
-          name="twitter:description"
-          content="Starter template showing how to use LangChain in Next.js projects. See source code and deploy your own at https://github.com/langchain-ai/langchain-nextjs-template!"
-        />
-        <meta name="twitter:image" content="/images/og-image.png" />
-      </head>
-      <body className={publicSans.className}>
-        <NuqsAdapter>
-          <div className="bg-secondary grid grid-rows-[auto,1fr] h-[100dvh]">
-            <div className="grid grid-cols-[1fr,auto] gap-2 p-4">
-              <div className="flex gap-4 flex-col md:flex-row md:items-center">
-                <a
-                  href="https://js.langchain.com"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  className="flex items-center gap-2"
-                >
-                  <Logo />
-                </a>
-                <nav className="flex gap-1 flex-col md:flex-row">
-                  <ActiveLink href="/">🏴‍☠️ Chat</ActiveLink>
-                  <ActiveLink href="/structured_output">
-                    🧱 Structured Output
-                  </ActiveLink>
-                  <ActiveLink href="/agents">🦜 Agents</ActiveLink>
-                  <ActiveLink href="/retrieval">🐶 Retrieval</ActiveLink>
-                  <ActiveLink href="/retrieval_agents">
-                    🤖 Retrieval Agents
-                  </ActiveLink>
-                  <ActiveLink href="/ai_sdk">
-                    🌊 React Server Components
-                  </ActiveLink>
-                  <ActiveLink href="/langgraph">🕸️ LangGraph</ActiveLink>
-                </nav>
-              </div>
-
-              <div className="flex justify-center">
-                <Button asChild variant="outline" size="default">
-                  <a
-                    href="https://github.com/langchain-ai/langchain-nextjs-template"
-                    target="_blank"
-                  >
-                    <GithubIcon className="size-3" />
-                    <span>Open in GitHub</span>
-                  </a>
-                </Button>
-              </div>
-            </div>
-            <div className="bg-background mx-4 relative grid rounded-t-2xl border border-input border-b-0">
-              <div className="absolute inset-0">{children}</div>
-            </div>
-          </div>
-          <Toaster />
-        </NuqsAdapter>
-      </body>
-    </html>
+    <AutoConnectProvider>
+      <ReactQueryClientProvider>
+        <WalletProvider>
+          <html lang="en">
+            <head>
+              <title>2Tag x MetaMove</title>
+              <link rel="shortcut icon" href="/images/favicon.ico" />
+              <meta
+                name="description"
+                content="2Tag x MetaMove"
+              />
+              <meta
+                property="og:title"
+                content="2Tag x MetaMove"
+              />
+              <meta
+                property="og:description"
+                content="2Tag x MetaMove"
+              />
+              <meta property="og:image" content="/images/og-image.png" />
+              <meta name="twitter:card" content="summary_large_image" />
+              <meta
+                name="twitter:title"
+                content="2Tag x MetaMove"
+              />
+              <meta
+                name="twitter:description"
+                content="2Tag x MetaMove"
+              />
+              <meta name="twitter:image" content="/images/og-image.png" />
+            </head>
+            <body className={publicSans.className}>
+              <WalletConnectionHandler>
+                <NuqsAdapter>
+                  <div className="bg-secondary grid grid-rows-[auto,1fr] h-[100dvh]">
+                    <div className="grid grid-cols-[1fr,auto] gap-2 p-4">
+                      <div className="flex gap-4 flex-col md:flex-row md:items-center justify-between">
+                        <a
+                          href="https://js.langchain.com"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          className="flex items-center gap-2"
+                        >
+                          <Logo />
+                        </a>
+                        <nav className="flex gap-1 flex-col md:flex-row">
+                          <Wallet />
+                        </nav>
+                      </div>
+                    </div>
+                    <div className="bg-background mx-4 relative grid rounded-t-2xl border border-input border-b-0">
+                      <div className="absolute inset-0">{children}</div>
+                    </div>
+                  </div>
+                  <Toaster />
+                </NuqsAdapter>
+              </WalletConnectionHandler>
+            </body>
+          </html>
+        </WalletProvider>
+      </ReactQueryClientProvider>
+    </AutoConnectProvider>
   );
 }

@@ -23,6 +23,7 @@ import {
 } from "./ui/dialog";
 import { cn } from "@/utils/cn";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { ChatMessageMetaMove } from "./ChatMessageMetaMove";
 
 function ChatMessages(props: {
   messages: Message[];
@@ -30,6 +31,7 @@ function ChatMessages(props: {
   sourcesForMessages: Record<string, any>;
   aiEmoji?: string;
   className?: string;
+  tool?: string;
 }) {
   return (
     <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
@@ -40,7 +42,7 @@ function ChatMessages(props: {
 
         const sourceKey = (props.messages.length - 1 - i).toString();
         return (
-          <ChatMessageBubble
+          <ChatMessageMetaMove
             key={m.id}
             message={m}
             aiEmoji={props.aiEmoji}
@@ -166,7 +168,7 @@ export function ChatLayout(props: { content: ReactNode; footer: ReactNode }) {
   );
 }
 
-export function ChatWindow(props: {
+export function ChatWindowMetaMove(props: {
   endpoint: string;
   emptyStateComponent: ReactNode;
   placeholder?: string;
@@ -179,6 +181,25 @@ export function ChatWindow(props: {
   );
   const [intermediateStepsLoading, setIntermediateStepsLoading] =
     useState(false);
+
+  const presetInputs = [
+    {
+      label: "🎯 Generate Hashtags",
+      value: "Generate relevant hashtags of Crypto",
+    },
+    {
+      label: "🌟 Generate Image",
+      value: "Generate an image about Crypto",
+    },
+    {
+      label: "💡Create Tweet",
+      value: "Create a tweet about Crypto",
+    },
+    {
+      label: "🤔 View NFTs",
+      value: "View NFTs on Aptos",
+    },
+  ];
 
   const [sourcesForMessages, setSourcesForMessages] = useState<
     Record<string, any>
@@ -216,6 +237,7 @@ export function ChatWindow(props: {
     if (chat.isLoading || intermediateStepsLoading) return;
 
     if (!showIntermediateSteps) {
+      console.log("not show intermediate steps");
       chat.handleSubmit(e);
       return;
     }
@@ -299,7 +321,28 @@ export function ChatWindow(props: {
     <ChatLayout
       content={
         chat.messages.length === 0 ? (
-          <div>{props.emptyStateComponent}</div>
+          <div className="flex flex-col items-center gap-4 w-full">
+            {props.emptyStateComponent}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 w-full max-w-2xl px-4">
+              {presetInputs.map((preset, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  className="w-full min-h-[120px] p-4 h-auto text-left flex flex-col items-start gap-2 hover:bg-secondary/80 transition-colors overflow-hidden"
+                  onClick={() => {
+                    chat.setInput(preset.value);
+                  }}
+                >
+                  <span className="font-semibold text-base w-full break-words">
+                    {preset.label}
+                  </span>
+                  <span className="text-sm text-muted-foreground w-full flex-wrap line-clamp-2 whitespace-pre-wrap">
+                    {preset.value}
+                  </span>
+                </Button>
+              ))}
+            </div>
+          </div>
         ) : (
           <ChatMessages
             aiEmoji={props.emoji}

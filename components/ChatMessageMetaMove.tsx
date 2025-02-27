@@ -1,15 +1,13 @@
 import { cn } from "@/utils/cn";
 import type { Message } from "ai/react";
-
-const contentHashtagsParser = (content: string) => {
-  const hashtags = content.match(/#\w+/g);
-  return hashtags;
-};
+import HashtagsView from "./HashtagsView";
+import Image from "next/image";
+import { parseContentToJson } from "@/utils/parseContentToJson";
 
 const formatMessageContent = (content: string) => {
   const parts = content.split(/(#\w+)/g);
   return parts.map((part, index) => {
-    if (part.startsWith('#')) {
+    if (part.startsWith("#")) {
       return (
         <span
           key={index}
@@ -23,7 +21,7 @@ const formatMessageContent = (content: string) => {
   });
 };
 
-export function ChatMessageBubble(props: {
+export function ChatMessageMetaMove(props: {
   message: Message;
   aiEmoji?: string;
   sources: any[];
@@ -44,8 +42,8 @@ export function ChatMessageBubble(props: {
         </div>
       )}
 
-      <div className="whitespace-pre-wrap flex flex-col">
-        <span>{formatMessageContent(props.message.content)}</span>
+      <div className="whitespace-pre-wrap flex flex-col w-full">
+        {parseContentToJson(props.message)}
 
         {props.sources && props.sources.length ? (
           <>
