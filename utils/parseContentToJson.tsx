@@ -101,23 +101,27 @@ export const parseContentToJson = (message: Message) => {
         return (
           <div>
             <div className="flex flex-row gap-4 flex-wrap">
-              {formattedData.nfts.map((nft: any) => (
-                <div
-                  key={nft.token_id}
-                  className="border border-gray-300 rounded-lg p-2"
-                >
-                  {nft.token_uri && (
-                    <Image
-                      src={nft.token_uri}
-                      alt={nft.token_name}
-                      width={200}
-                      height={200}
-                      className="rounded-lg"
-                    />
-                  )}
-                  <p>{nft.token_name}</p>
-                </div>
-              ))}
+              {formattedData.nfts.length > 0 ? (
+                formattedData.nfts.map((nft: any) => (
+                  <div
+                    key={nft.token_id}
+                    className="border border-gray-300 rounded-lg p-2"
+                  >
+                    {nft.token_uri && (
+                      <Image
+                        src={nft.token_uri}
+                        alt={nft.token_name}
+                        width={200}
+                        height={200}
+                        className="rounded-lg"
+                      />
+                    )}
+                    <p>{nft.token_name}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No NFTs found</p>
+              )}
             </div>
           </div>
         );
@@ -175,12 +179,14 @@ export const parseContentToJson = (message: Message) => {
         );
 
       default:
-        // check if content can be parsed as json
         try {
+          console.log("default", content.messages.content);
           const jsonContent = JSON.parse(content.messages.content);
           return <div>{jsonContent.content}</div>;
         } catch (error) {
-          return content.messages.content;
+          console.log("error", error, content.messages.content);
+          // Don't try to parse JSON again if it failed the first time
+          return <div>{content.messages.content}</div>;
         }
     }
   } catch (error) {

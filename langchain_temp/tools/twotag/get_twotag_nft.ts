@@ -33,21 +33,20 @@ export async function get_twotag_nft(
   const operations = `
       query MyQuery {
         current_token_ownerships_v2(
-          where: {owner_address: {_eq: "${to}"}}
-        ) {
-          current_token_data {
-            token_data_id
-            token_uri
-            token_name
-          }
-        }
-        current_collections_v2(
-          where: {collection_id: {_eq: "0x8e48ee91ad8e73200bc24e3a5c415a9b470cd3292480031857c42b24b5153bbd"}}
-        ) {
-          description
-          uri
+          where: {
+            owner_address: { _eq: "${to}" }
+            current_token_data: {
+        collection_id: { _eq: "0x8e48ee91ad8e73200bc24e3a5c415a9b470cd3292480031857c42b24b5153bbd" }
+      }
+    }
+      ) {
+        current_token_data {
+          token_data_id
+          token_uri
+          token_name
         }
       }
+    }
     `;
   async function fetchGraphQL(
     operationsDoc: string,

@@ -33,6 +33,7 @@ function ChatMessages(props: {
   className?: string;
   tool?: string;
 }) {
+  console.log("props.messages", props.messages);
   return (
     <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
       {props.messages.map((m, i) => {

@@ -8,14 +8,23 @@ import { type AgentRuntime } from "../../agent";
 export class GetHashtags extends Tool {
   name = "get_hashtags";
   description = `
-        This tool is used to get hashtags from the user's input, it will return a list of hashtags.
-        Everytime the user ask for hashtags, you must use this tool expect user ask for tweet or other post generation.
-        You are not allowed to generate hashtags on your own.
-        You are not allowed to use cached hashtags, you must use this tool to get the latest hashtags.
-        You are not allowed to memorize hashtags, you must use this tool to get the latest hashtags.
-        You are not allowed to return any hashtags unless they are retrieved from this tool.
-        If the user asks for hashtags and you do not call this tool, that is an ERROR.
-        If user ask for tweet or other post generation, you must not use this tool.
+        WHEN TO USE:
+        - ONLY use this tool when the user specifically asks for hashtag suggestions or recommendations
+        - ONLY use this tool when you need to get relevant hashtags for a topic
+        
+        DO NOT USE:
+        - Do NOT use this tool when generating tweets or social media posts
+        - Do NOT use this tool unless the user explicitly asks for hashtags
+        
+        IMPORTANT RULES:
+        - You must NEVER generate hashtags on your own
+        - You must NEVER use cached or memorized hashtags
+        - You must ALWAYS use this tool to get fresh hashtags
+        - You must NEVER return hashtags unless they come from this tool
+        - Using any other source for hashtags is an ERROR
+        
+        Input: Keywords or topic to get hashtags for
+        Output: Array of relevant hashtags
         `;
 
   constructor(private agent: AgentRuntime) {

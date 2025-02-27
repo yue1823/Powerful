@@ -145,12 +145,21 @@ export async function POST(req: NextRequest) {
           
           Be concise and helpful in your responses. Refrain from restating your tools' descriptions unless explicitly requested.`,
     });
+
     const llmWithTools = llm.bindTools(tools);
 
+    console.log("messages", messages);
     const aiMessage = await llmWithTools.invoke(messages);
-
-    messages.push(aiMessage);
-
+    let parsedContent;
+    try {
+      parsedContent = JSON.parse(aiMessage.content.toString());
+    } catch (error) {
+      parsedContent = aiMessage.content; // 如果解析失敗，則保持原樣
+    }
+    messages.push({
+      role: "assistant",
+      content: parsedContent.messages?.content || parsedContent, // 確保只存入有效的內容
+    });
     if (aiMessage?.tool_calls) {
       for (const toolCall of aiMessage.tool_calls) {
         const selectedTool =
@@ -168,7 +177,7 @@ export async function POST(req: NextRequest) {
     } else {
       return NextResponse.json({
         messages: {
-          content: aiMessage.content,
+          content: parsedContent.messages?.content || parsedContent,
           tool: null,
         },
       });
@@ -177,6 +186,7 @@ export async function POST(req: NextRequest) {
     const agentMessage = messages[messages.length - 1];
     // return the message from the agent
 
+    console.log("agentMessage", agentMessage.content);
     return NextResponse.json({
       messages: {
         content: agentMessage.content,

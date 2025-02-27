@@ -9,24 +9,28 @@ import { type AgentRuntime, parseJson } from "../..";
 export class TweetNFTTool extends Tool {
   name = "two_tag_tweet_nft";
   description = `
-	This tool generates a tweet post with relevant hashtags and an AI-generated image based on user-provided keywords. The tweet and image will be minted as an NFT on the Aptos blockchain.
+        WHEN TO USE:
+        - Use this tool when the user wants to create/generate a tweet or social media post
+        - Use this tool when you need to access the user's TwoTag Tweet NFT collection
+        
+        DO NOT USE:
+        - Do NOT use this tool when the user only asks for hashtag suggestions
+        
+        FUNCTIONALITY:
+        - Creates a tweet with AI-generated image and mints it as an NFT
+        - Returns transaction hash, image URL and tweet text
+        
+        Input: Keywords or topic to create tweet about (string)
+        Output: JSON object containing:
+          - transaction: string (transaction hash)
+          - image: string (generated image URL) 
+          - tweet_text: string (the generated tweet)
 
-	The tool takes a keyword or topic as input and:
-	1. Generates a catchy tweet incorporating trending hashtags related to the topic
-	2. Creates an AI-generated image that matches the tweet content with 
-	3. Mints the tweet and image as an NFT
-	4. Returns a JSON object containing:
-		transaction: string (transaction hash),
-		image: string (generated image URL),
-		tweet_text: string (the generated tweet)
-
-	Input should be a string describing the topic you want to tweet about.
-
-	Example input:
-	"bitcoin"
-	"web3 development"
-	"nft art"
-	`;
+        Example inputs:
+        "bitcoin"
+        "web3 development" 
+        "nft art"
+    `;
 
   constructor(private agent: AgentRuntime) {
     super();
