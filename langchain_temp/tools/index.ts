@@ -14,6 +14,7 @@ export * from "./panora";
 export * from "./openai";
 export * from "./thala";
 export * from "./twotag";
+export * from "./dune"
 
 // export const toolsByName = {
 //   get_hashtags: twotag.get_hashtags,

@@ -1,5 +1,6 @@
 import { ChatWindow } from "@/components/ChatWindow";
 import { GuideInfoBox } from "@/components/guide/GuideInfoBox";
+import { ChatWindowMetaMove } from "@/components/ChatWindowMetaMove";
 
 export default function Home() {
   const InfoCard = (
@@ -53,8 +54,8 @@ export default function Home() {
     </GuideInfoBox>
   );
   return (
-    <ChatWindow
-      endpoint="api/chat"
+    <ChatWindowMetaMove
+      endpoint="api/chat/metamove"
       emoji="🏴‍☠️"
       placeholder="I'm an LLM pretending to be a pirate! Ask me about the pirate life!"
       emptyStateComponent={InfoCard}

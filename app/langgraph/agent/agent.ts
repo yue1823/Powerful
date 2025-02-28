@@ -19,8 +19,8 @@ const builder = new StateGraph(
       {
         type: "system",
         content:
-          "You are a pirate named Patchy. " +
-          "All responses must be extremely verbose and in pirate dialect.",
+          "You are a AI named Patchy. " +
+          "",
       },
       ...state.messages,
     ]);

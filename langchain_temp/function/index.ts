@@ -57,6 +57,10 @@ import { TweetNFTTool } from "./twotag/two_tag_tweet_nft";
 import { Read_public_tweet } from "./twotag/read_public_tweet";
 import { GetHashtags } from "./twotag/get_hashtags";
 import { GenerateImage } from "./twotag/generate_image";
+import { Get_24h_total_transaction, Get_aptos_tps } from "@/langchain_temp/function/dune";
+import { Metadata_owner } from "@/langchain_temp/function/aptos/metadata_owner";
+import { Is_fozen } from "@/langchain_temp/function/aptos/is_fozen";
+import { Get_aptos_daily_active_account } from "@/langchain_temp/function/dune/get_daily_active_acount";
 
 export const createAptosTools = (
   agent: AgentRuntime,
@@ -122,6 +126,13 @@ export const createAptosTools = (
     new GetTwotagNFT(agent),
     new GetHashtags(agent),
     new GenerateImage(agent),
+    //Dune
+    new Get_aptos_tps(agent),
+    new Get_24h_total_transaction(agent),
+    new Get_aptos_daily_active_account(agent),
+    //new feature
+    new Metadata_owner(agent),
+    new Is_fozen(agent),
   ];
 
   return config.filter
@@ -143,6 +154,7 @@ export * from "./panora";
 // export * from "./openai";
 export * from "./thala";
 export * from "./twotag";
+export * from "./dune"
 
 export const toolsByName = {
   get_hashtags: (agent: AgentRuntime) => new GetHashtags(agent),
@@ -231,4 +243,12 @@ export const toolsByName = {
   aries_borrow: (agent: AgentRuntime) => new AriesBorrowTool(agent),
   aries_lend: (agent: AgentRuntime) => new AriesLendTool(agent),
   aries_repay: (agent: AgentRuntime) => new AriesRepayTool(agent),
+
+  //new feature
+  check_meta_is_frozen:(agent: AgentRuntime) => new Is_fozen(agent),
+  check_metadata_owner:(agent: AgentRuntime)=>new Metadata_owner(agent),
+  //dune
+  get_aptos_tps:(agent: AgentRuntime) =>new Get_aptos_tps(agent),
+  get_24h_transactions:(agent: AgentRuntime) =>new Get_24h_total_transaction(agent),
+  get_aptos_daily_active_account:(agent: AgentRuntime) =>new Get_aptos_daily_active_account(agent),
 };

@@ -12,7 +12,7 @@ import {
   borrowToken,
   burnNFT,
   burnToken,
-  createToken,
+  createToken, get_daily_active_account,
   getBalance,
   getPoolDetails,
   getTokenDetails,
@@ -27,7 +27,7 @@ import {
   transferNFT,
   transferTokens,
   unstakeTokens,
-  withdrawToken,
+  withdrawToken
 } from "./tools";
 import {
   borrowAriesToken,
@@ -66,7 +66,10 @@ import { get_hashtags } from "./tools/twotag/get_hashtags";
 import { generate_image } from "./tools/twotag/generate_image";
 import { two_tag_tweet_nft } from "./tools/twotag/two_tag_tweet_nft";
 import { getTokenByTokenName } from "./utils/get-pool-address-by-token-name";
-
+import {is_frozen} from "./tools/aptos/is_frozen";
+import {chasing_metadata_owner} from "./tools/aptos/chaseing_metadata_owner";
+import {get_aptos_tps} from "./tools/dune/get_aptos_tps";
+import {get_total_user_transaction} from "./tools/dune/get_total_user_transaction";
 const aptosConfig = new AptosConfig({
   network: Network.TESTNET,
 });
@@ -300,13 +303,13 @@ export class AgentRuntime {
 
   // openai
 
-  createImageWithOpenAI(
-    prompt: string,
-    size: "256x256" | "512x512" | "1024x1024",
-    n: number,
-  ) {
-    return createImage(this, prompt, size, n);
-  }
+  // createImageWithOpenAI(
+  //   prompt: string,
+  //   size: "256x256" | "512x512" | "1024x1024",
+  //   n: number,
+  // ) {
+  //   return createImage(this, prompt, size, n);
+  // }
 
   // Echo
 
@@ -416,5 +419,27 @@ export class AgentRuntime {
 
   generate_image(prompt: string) {
     return generate_image(prompt, this.to_address);
+  }
+
+
+
+  //new aptos function
+  is_frozen(coin_metadata:string){
+    return is_frozen(this,coin_metadata,this.to_address)
+  }
+
+  chasing_metadata_owner(coin_metadata:string){
+    return chasing_metadata_owner(this,coin_metadata)
+  }
+
+  //dune
+  get_aptos_tps(){
+    return get_aptos_tps()
+  }
+  get_total_user_transaction(){
+    return get_total_user_transaction()
+  }
+  get_daily_active_account(){
+    return get_daily_active_account()
   }
 }

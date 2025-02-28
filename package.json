@@ -16,6 +16,7 @@
   "dependencies": {
     "@aptos-labs/wallet-adapter-ant-design": "^4.0.3",
     "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
+    "@duneanalytics/client-sdk": "^0.2.5",
     "@langchain/community": "^0.3.25",
     "@langchain/core": "^0.3.31",
     "@langchain/google-genai": "^0.1.8",

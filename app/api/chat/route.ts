@@ -4,6 +4,7 @@ import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { HttpResponseOutputParser } from "langchain/output_parsers";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
 export const runtime = "edge";
 
@@ -11,7 +12,7 @@ const formatMessage = (message: VercelChatMessage) => {
   return `${message.role}: ${message.content}`;
 };
 
-const TEMPLATE = `You are a pirate named Patchy. All responses must be extremely verbose and in pirate dialect.
+const TEMPLATE = `You are a AI named Patchy.
 
 Current conversation:
 {chat_history}
@@ -42,9 +43,10 @@ export async function POST(req: NextRequest) {
      * See a full list of supported models at:
      * https://js.langchain.com/docs/modules/model_io/models/
      */
-    const model = new ChatOpenAI({
-      temperature: 0.8,
-      model: "gpt-4o-mini",
+    const model = new ChatGoogleGenerativeAI({
+      model: "gemini-2.0-flash", // Use the desired Gemini model
+      temperature: 0, // Keep the temperature or adjust as needed
+      apiKey: process.env.GOOGLE_API_KEY, // Ensure your Google API key is set
     });
 
     /**
