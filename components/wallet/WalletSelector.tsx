@@ -65,7 +65,7 @@ export function WalletSelector(walletSortingOptions: WalletSortingOptions) {
   }, [account?.address, toast]);
 
   return connected ? (
-    <DropdownMenu>
+    <DropdownMenu  >
       <DropdownMenuTrigger asChild>
         <Button>
           {account?.ansName || truncateAddress(account?.address) || "Unknown"}
@@ -118,7 +118,7 @@ function ConnectWalletDialog({
   const hasAptosConnectWallets = !!aptosConnectWallets.length;
 
   return (
-    <DialogContent className="max-h-screen overflow-auto">
+    <DialogContent className="max-h-screen overflow-auto z-50">
       <AboutAptosConnect renderEducationScreen={renderEducationScreen}>
         <DialogHeader>
           <DialogTitle className="flex flex-col text-center leading-snug">

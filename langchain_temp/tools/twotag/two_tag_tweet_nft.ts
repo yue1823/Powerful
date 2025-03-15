@@ -71,7 +71,7 @@ export async function two_tag_tweet_nft(
         (data: { hashtag: string; acc: number }) => data.hashtag,
       );
       const response = await fetch(
-        "https://essaa-creatolens-cdr-media-service-sit-y7nazd37ga-df.a.run.app/api/metamove/image/prompt",
+        `${process.env.TWOTAP_API}`,
         {
           method: "POST",
           body: JSON.stringify({
@@ -86,15 +86,15 @@ export async function two_tag_tweet_nft(
       const imageUrl = (await response.json()).image_url;
 
       const tweetContent = await generateTweet(llm, result);
-      // console.log("tweetContent:", tweetContent);
-
+       console.log("tweetContent:", tweetContent);
+      console.log("imageUrl :", imageUrl );
       const output = tweetContent + imageUrl;
 
       const transaction = await agent.aptos.transaction.build.simple({
         sender: agent.account.getAddress(),
         data: {
           function:
-            "0xac314e37a527f927ee7600ac704b1ee76ff95ed4d21b0b7df1c58be8872da8f0::post::tweet",
+            "0xeb05737cc1f4f8284bdd65317c472eedb8cc772def27b816ee837fe4f946d7b0::post::tweet",
           functionArguments: [result, tweetContent, account, imageUrl],
         },
       });

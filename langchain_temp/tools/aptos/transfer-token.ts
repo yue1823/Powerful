@@ -1,9 +1,6 @@
-import {
-	type AccountAddress,
-	type InputGenerateTransactionPayloadData,
-	convertAmountFromHumanReadableToOnChain,
-} from "@aptos-labs/ts-sdk"
-import type { AgentRuntime } from "../../agent"
+import { type AccountAddress } from "@aptos-labs/ts-sdk";
+import type { AgentRuntime } from "../../agent";
+import { InputTransactionData } from "@aptos-labs/wallet-adapter-react";
 
 /**
  * Transfer APT, tokens or fungible asset to a recipient
@@ -24,37 +21,49 @@ export async function transferTokens(
 	to: AccountAddress,
 	amount: number,
 	mint: string
-): Promise<string> {
-	const COIN_STANDARD_DATA: InputGenerateTransactionPayloadData = {
-		function: "0x1::coin::transfer",
-		typeArguments: [mint],
-		functionArguments: [to.toString(), amount],
-	}
-
-	const FUNGIBLE_ASSET_DATA: InputGenerateTransactionPayloadData = {
-		function: "0x1::primary_fungible_store::transfer",
-		typeArguments: ["0x1::fungible_asset::Metadata"],
-		functionArguments: [mint, to.toString(), amount],
-	}
+): Promise<InputTransactionData> {
+	// const COIN_STANDARD_DATA: InputGenerateTransactionPayloadData = {
+	// 	function: "0x1::coin::transfer",
+	// 	typeArguments: [mint],
+	// 	functionArguments: [to.toString(), amount],
+	// }
+	//
+	// const FUNGIBLE_ASSET_DATA: InputGenerateTransactionPayloadData = {
+	// 	function: "0x1::primary_fungible_store::transfer",
+	// 	typeArguments: ["0x1::fungible_asset::Metadata"],
+	// 	functionArguments: [mint, to.toString(), amount],
+	// }
 
 	try {
-		const transaction = await agent.aptos.transaction.build.simple({
-			sender: agent.account.getAddress(),
-			data: mint.split("::").length === 3 ? COIN_STANDARD_DATA : FUNGIBLE_ASSET_DATA,
-		})
+		// const signedTransaction = await agent.aptos.waitForTransaction({
+			// 	transactionHash: committedTransactionHash,
+			// })
+			// const hash = await agent.aptos.waitForTransaction({transactionHash:committedTransactionHash.hash});
+			// const transaction = await agent.aptos.transaction.build.simple({
+			// 	sender: agent.account.getAddress(),
+			// 	data: mint.split("::").length === 3 ? COIN_STANDARD_DATA : FUNGIBLE_ASSET_DATA,
+			// })
 
-		const committedTransactionHash = await agent.account.sendTransaction(transaction)
+			// const committedTransactionHash = await agent.account.sendTransaction(transaction)
+			// if (!hash) {
+			// 	console.error(hash, "Token transfer failed")
+			// 	throw new Error("Token transfer failed")
+			// }
 
-		const signedTransaction = await agent.aptos.waitForTransaction({
-			transactionHash: committedTransactionHash,
-		})
+			return (mint.split("::").length === 3 ? {
+				data: {
+					function: "0x1::coin::transfer",
+					typeArguments: [mint],
+					functionArguments: [to.toString(), amount],
+				}
+			} : {
+				data: {
+					function: "0x1::primary_fungible_store::transfer",
+					typeArguments: ["0x1::fungible_asset::Metadata"],
+					functionArguments: [mint, to.toString(), amount],
+				}
+			})
 
-		if (!signedTransaction.success) {
-			console.error(signedTransaction, "Token transfer failed")
-			throw new Error("Token transfer failed")
-		}
-
-		return signedTransaction.hash
 	} catch (error: any) {
 		throw new Error(`Token transfer failed: ${error.message}`)
 	}

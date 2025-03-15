@@ -20,7 +20,7 @@ export class AptosBurnNFTTool extends Tool {
 
 			return JSON.stringify({
 				status: "success",
-				transfer,
+				inputdata:transfer,
 				nft: parsedInput.mint,
 			})
 		} catch (error: any) {

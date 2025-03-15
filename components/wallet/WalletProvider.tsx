@@ -10,7 +10,7 @@ import { useClaimSecretKey } from "../hooks/useClaimSecretKey";
 import { useAutoConnect } from "./AutoConnectProvider";
 import { toast } from "sonner";
 
-export const WalletProvider = ({ children }: PropsWithChildren) => {
+export const WalletProvider = ({ children }: PropsWithChildren<{}>) => {
   const { autoConnect } = useAutoConnect();
 
   // Enables claim flow when the `claim` query param is detected
@@ -26,7 +26,7 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
       plugins={wallets}
       autoConnect={autoConnect}
       dappConfig={{
-        network: Network.TESTNET,
+        network: Network.MAINNET,
         aptosApiKeys: {
           testnet: process.env.NEXT_PUBLIC_APTOS_API_KEY_TESNET,
           devnet: process.env.NEXT_PUBLIC_APTOS_API_KEY_DEVNET,

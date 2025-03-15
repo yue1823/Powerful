@@ -38,7 +38,7 @@ export class JouleWithdrawTokenTool extends Tool {
 
 			return JSON.stringify({
 				status: "success",
-				withdrawTokenTransactionHash,
+				inputdata:withdrawTokenTransactionHash,
 				token: {
 					name: mintDetail.name,
 					decimals: mintDetail.decimals,

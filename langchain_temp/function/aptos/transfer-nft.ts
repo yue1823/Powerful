@@ -8,7 +8,7 @@ export class AptosTransferNFTTool extends Tool {
 
   Inputs ( input is a JSON string ):
   to: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (required)
-  mint: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT" (required)`
+  mint: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (required)`
 
 	constructor(private agent: AgentRuntime) {
 		super()
@@ -18,11 +18,11 @@ export class AptosTransferNFTTool extends Tool {
 		try {
 			const parsedInput = parseJson(input)
 
-			const transfer = await this.agent.transferNFT(AccountAddress.from(parsedInput.to), parsedInput.mint)
+			const transfer = await this.agent.transferNFT(AccountAddress.from(parsedInput.to),AccountAddress.from(parsedInput.mint))
 
 			return JSON.stringify({
 				status: "success",
-				transfer,
+				inputdata:transfer,
 				nft: parsedInput.mint,
 			})
 		} catch (error: any) {

@@ -18,7 +18,7 @@ export class Get_aptos_daily_active_account extends Tool {
 
     async _call(): Promise<string> {
         try {
-            const Data = await this.agent. get_daily_active_account()
+            const Data = await this.agent.get_daily_active_account()
             return JSON.stringify({
                 content: Data,
             })

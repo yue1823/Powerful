@@ -23,7 +23,7 @@ export class JouleGetPoolDetails extends Tool {
 
 			return JSON.stringify({
 				status: "success",
-				pool,
+			  pool,
 			})
 		} catch (error: any) {
 			return JSON.stringify({

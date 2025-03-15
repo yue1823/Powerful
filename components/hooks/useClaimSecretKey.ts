@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react"
 
 const claimSecretKeyStorageKey = "@wallet-adapter-example-dapp/claimSecretKey"
 
-const config = new AptosConfig({ network: Network.TESTNET })
+const config = new AptosConfig({ network: Network.MAINNET})
 const aptos = new Aptos(config)
 
 function getPersistedClaimSecretKey() {

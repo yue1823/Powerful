@@ -8,8 +8,8 @@ import {
   AptosGetTokenDetailTool,
   AptosGetTokenPriceTool,
   AptosMintTokenTool,
-  AptosTransactionTool,
-  AptosTransferTokenTool,
+  AptosTransactionTool, AptosTransferNFTTool,
+  AptosTransferTokenTool
 } from "./aptos";
 import {
   AriesBorrowTool,
@@ -57,10 +57,21 @@ import { TweetNFTTool } from "./twotag/two_tag_tweet_nft";
 import { Read_public_tweet } from "./twotag/read_public_tweet";
 import { GetHashtags } from "./twotag/get_hashtags";
 import { GenerateImage } from "./twotag/generate_image";
-import { Get_24h_total_transaction, Get_aptos_tps } from "@/langchain_temp/function/dune";
+import {
+  Get_24h_total_transaction,
+  Get_aptos_monthly_transaction,
+  Get_aptos_tps
+} from "@/langchain_temp/function/dune";
 import { Metadata_owner } from "@/langchain_temp/function/aptos/metadata_owner";
 import { Is_fozen } from "@/langchain_temp/function/aptos/is_fozen";
 import { Get_aptos_daily_active_account } from "@/langchain_temp/function/dune/get_daily_active_acount";
+import { AptosBurnNFTTool } from "@/langchain_temp/function/aptos/burn-nft";
+import { Get_aptos_monthly_active_account } from "@/langchain_temp/function/dune/get_monthly_active_account";
+import { Get_aptos_transaction_success_rate } from "@/langchain_temp/function/dune/get_aptos_transaction_success_rate";
+import { Get_aptos_average_gas_fee } from "@/langchain_temp/function/dune/get_aptos_average_gas_fee";
+import { Create_red_pocket } from "@/langchain_temp/function/twotag";
+import { SwapEmojiTool } from "@/langchain_temp/function/emoji";
+import { Analytics_address_Tool } from "@/langchain_temp/function/aptos/analytics_address";
 
 export const createAptosTools = (
   agent: AgentRuntime,
@@ -71,9 +82,10 @@ export const createAptosTools = (
     new AptosBalanceTool(agent),
     new AptosAccountAddressTool(agent),
     new AptosTransferTokenTool(agent),
-    // new AptosBurnNFTTool(agent),
+    new AptosBurnNFTTool(agent),
     new AptosBurnTokenTool(agent),
-    // new AptosTransferNFTTool(agent),
+    new AptosTransferNFTTool(agent),
+
     new AptosTransactionTool(agent),
     new AptosGetTokenDetailTool(agent),
     new AptosMintTokenTool(agent),
@@ -126,13 +138,23 @@ export const createAptosTools = (
     new GetTwotagNFT(agent),
     new GetHashtags(agent),
     new GenerateImage(agent),
+    new Create_red_pocket(agent),
     //Dune
     new Get_aptos_tps(agent),
     new Get_24h_total_transaction(agent),
     new Get_aptos_daily_active_account(agent),
+    new Get_aptos_monthly_active_account(agent),
+    new Get_aptos_monthly_transaction(agent),
+    new Get_aptos_transaction_success_rate(agent),
+    new Get_aptos_average_gas_fee(agent),
     //new feature
     new Metadata_owner(agent),
     new Is_fozen(agent),
+    new Analytics_address_Tool(agent),
+
+    //emoji
+    new SwapEmojiTool(agent)
+
   ];
 
   return config.filter
@@ -155,6 +177,7 @@ export * from "./panora";
 export * from "./thala";
 export * from "./twotag";
 export * from "./dune"
+export * from "./emoji"
 
 export const toolsByName = {
   get_hashtags: (agent: AgentRuntime) => new GetHashtags(agent),
@@ -162,8 +185,10 @@ export const toolsByName = {
   get_twotag_tweet: (agent: AgentRuntime) => new GetTwotagNFT(agent),
   read_public_tweet: (agent: AgentRuntime) => new Read_public_tweet(agent),
   two_tag_tweet_nft: (agent: AgentRuntime) => new TweetNFTTool(agent),
+  create_red_pocket:(agent:AgentRuntime)=>new Create_red_pocket(agent),
 
   // Aptos tools
+  aptos_transfer_nft: (agent:AgentRuntime)=> new AptosTransferNFTTool(agent),
   aptos_balance: (agent: AgentRuntime) => new AptosBalanceTool(agent),
   aptos_get_wallet_address: (agent: AgentRuntime) =>
     new AptosAccountAddressTool(agent),
@@ -206,7 +231,7 @@ export const toolsByName = {
   liquidswap_swap: (agent: AgentRuntime) => new LiquidSwapSwapTool(agent),
 
   // Panora tools
-  panora_swap: (agent: AgentRuntime) => new PanoraSwapTool(agent),
+  panora_aggregator_swap: (agent: AgentRuntime) => new PanoraSwapTool(agent),
 
   // OpenAI tools
   // openai_generate_image: (agent: AgentRuntime) =>
@@ -247,8 +272,17 @@ export const toolsByName = {
   //new feature
   check_meta_is_frozen:(agent: AgentRuntime) => new Is_fozen(agent),
   check_metadata_owner:(agent: AgentRuntime)=>new Metadata_owner(agent),
+  analytics_address:(agent:AgentRuntime) =>new Analytics_address_Tool(agent),
   //dune
   get_aptos_tps:(agent: AgentRuntime) =>new Get_aptos_tps(agent),
   get_24h_transactions:(agent: AgentRuntime) =>new Get_24h_total_transaction(agent),
   get_aptos_daily_active_account:(agent: AgentRuntime) =>new Get_aptos_daily_active_account(agent),
+  get_aptos_monthly_active_account:(agent: AgentRuntime)=>new Get_aptos_monthly_active_account(agent),
+  get_aptos_monthly_transaction:(agent:AgentRuntime)=>new Get_aptos_monthly_transaction(agent),
+  get_aptos_transaction_success_rate:(agent:AgentRuntime)=>new Get_aptos_transaction_success_rate(agent),
+  get_aptos_average_gas_fee:(agent:AgentRuntime)=>new Get_aptos_average_gas_fee(agent),
+
+
+  //emoji
+  swap_emojicoin:(agent: AgentRuntime) =>  new SwapEmojiTool(agent),
 };

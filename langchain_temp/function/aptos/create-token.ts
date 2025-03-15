@@ -29,7 +29,7 @@ export class AptosCreateTokenTool extends Tool {
 
 			return JSON.stringify({
 				status: "success",
-				createTokenTransactionHash,
+				inputdata:createTokenTransactionHash,
 				token: {
 					name: parsedInput.name,
 					decimals: 8,

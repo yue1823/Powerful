@@ -1,5 +1,6 @@
 import { type MoveStructId, convertAmountFromOnChainToHumanReadable } from "@aptos-labs/ts-sdk"
 import type { AgentRuntime } from "../../agent"
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 /**
  * Fetches balance of an aptos account
@@ -11,6 +12,9 @@ import type { AgentRuntime } from "../../agent"
  * ```
  */
 export async function getBalance(agent: AgentRuntime, mint?: string | MoveStructId): Promise<number> {
+
+	// eslint-disable-next-line react-hooks/rules-of-hooks
+
 	try {
 		if (mint) {
 			let balance: number
@@ -19,7 +23,7 @@ export async function getBalance(agent: AgentRuntime, mint?: string | MoveStruct
 					options: {
 						where: {
 							owner_address: {
-								_eq: agent.account.getAddress().toStringLong(),
+								_eq: agent.to_address,
 							},
 							asset_type: { _eq: mint },
 						},
@@ -29,14 +33,14 @@ export async function getBalance(agent: AgentRuntime, mint?: string | MoveStruct
 				balance = balances[0].amount ?? 0
 			} else {
 				balance = await agent.aptos.getAccountCoinAmount({
-					accountAddress: agent.account.getAddress(),
+					accountAddress: agent.to_address,
 					coinType: mint as MoveStructId,
 				})
 			}
 			return balance
 		}
 		const balance = await agent.aptos.getAccountAPTAmount({
-			accountAddress: agent.account.getAddress(),
+			accountAddress: agent.to_address,
 		})
 
 		const convertedBalance = convertAmountFromOnChainToHumanReadable(balance, 8)

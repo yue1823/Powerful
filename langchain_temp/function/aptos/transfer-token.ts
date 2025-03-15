@@ -38,7 +38,8 @@ export class AptosTransferTokenTool extends Tool {
 
 			return JSON.stringify({
 				status: "success",
-				transferTokenTransactionHash,
+				content:"done",
+				inputdata:transferTokenTransactionHash,
 				token: {
 					name: mintDetail.name,
 					decimals: mintDetail.decimals,

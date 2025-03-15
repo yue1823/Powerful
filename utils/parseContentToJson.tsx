@@ -3,7 +3,13 @@ import HashtagsView from "@/components/HashtagsView";
 import Image from "next/image";
 import Wallet from "@/components/wallet/client_wallet";
 import { Button } from "@/components/ui/button";
+import { Text} from '@mantine/core';
 import { toast } from "sonner";
+
+import React, { useEffect } from "react";
+import CodeBox from "@/components/codebox";
+import { SwapWithRewards } from "@econia-labs/emojicoin-sdk";
+
 
 export const shareToTwitter = (tweet: string, url?: string) => {
   const tweetText = encodeURIComponent(tweet.replace(/&|@/g, ""));
@@ -61,7 +67,7 @@ const copyTweetToClipboard = async (tweet: string, image?: string) => {
   }
 };
 
-export const parseContentToJson = (message: Message) => {
+export const parseContentToJson =  (message: Message) => {
   if (!message?.content) return;
   if (message.role !== "assistant") return message.content;
 
@@ -75,7 +81,8 @@ export const parseContentToJson = (message: Message) => {
 
       case "generate_image":
         return (
-          <div className="relative w-full h-full min-w-[250px] min-h-[250px] sm:min-w-[350px] sm:min-h-[350px] md:min-w-[450px] md:min-h-[450px]">
+          <div
+            className="relative w-full h-full min-w-[250px] min-h-[250px] sm:min-w-[350px] sm:min-h-[350px] md:min-w-[450px] md:min-h-[450px]">
             <Image
               src={content.messages.content}
               alt="Generated Image"
@@ -177,6 +184,50 @@ export const parseContentToJson = (message: Message) => {
             <Wallet />
           </div>
         );
+
+      case "get_aptos_monthly_active_account":
+        const chartData = JSON.parse(content.messages.content);
+        console.log("chartdata", chartData)
+
+        return (
+          <>
+            <div
+              className="relative w-full h-full min-w-[250px] min-h-[250px] sm:min-w-[350px] sm:min-h-[350px] md:min-w-[450px] md:min-h-[550px]">
+              <Text fw={700}>Monthly Active Accounts</Text>
+              <iframe src="https://dune.com/embeds/4270616/7178977" style={{ width: "650px", height: "350px" }} />
+            </div>
+          </>
+        )
+      case "get_aptos_monthly_transaction":
+        return (
+          <>
+            <div
+              className="relative w-full h-full min-w-[250px] min-h-[250px] sm:min-w-[350px] sm:min-h-[350px] md:min-w-[450px] md:min-h-[550px]">
+              <Text fw={700}>Monthly Active Accounts</Text>
+              <iframe src="https://dune.com/embeds/4270616/7178985" style={{ width: "650px", height: "350px" }} />
+            </div>
+          </>
+        )
+      case "get_aptos_transaction_success_rate":
+        return (<>
+          <div
+            className="relative w-full h-full min-w-[300px] min-h-[350px] sm:min-w-[550px] sm:min-h-[450px] md:min-w-[750px] md:min-h-[650px]">
+            <Text fw={700}>Monthly Active Accounts</Text>
+            <iframe src="https://dune.com/embeds/4270676/7179034" style={{ width: "650px", height: "350px" }} />
+          </div>
+        </>)
+
+      case "get_aptos_average_gas_fee":
+        return (
+          <>
+            <div
+              className="relative w-full h-full min-w-[500px] min-h-[350px] sm:min-w-[550px] sm:min-h-[450px] md:min-w-[750px] md:min-h-[650px]">
+              <Text fw={700}>Monthly Active Accounts</Text>
+              <iframe src="https://dune.com/embeds/3442811/5784027" style={{ width: "650px", height: "350px" }} />
+            </div>
+          </>
+        )
+
 
       default:
         try {

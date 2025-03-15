@@ -27,7 +27,7 @@ export class AptosBurnTokenTool extends Tool {
 
 			return JSON.stringify({
 				status: "success",
-				burnTransactionHash,
+				inputdata:burnTransactionHash,
 				token: {
 					name: mintDetail.name,
 					decimals: mintDetail.decimals,

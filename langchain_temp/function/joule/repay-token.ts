@@ -36,7 +36,7 @@ export class JouleRepayTokenTool extends Tool {
 
 			return JSON.stringify({
 				status: "success",
-				repayTokenTransactionHash,
+				inputdata:repayTokenTransactionHash,
 				token: {
 					name: mintDetail.name,
 					decimals: mintDetail.decimals,

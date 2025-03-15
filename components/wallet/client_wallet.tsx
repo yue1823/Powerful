@@ -2,5 +2,5 @@
 import { WalletSelector } from "./WalletSelector";
 
 export default function Wallet() {
-  return <WalletSelector></WalletSelector>;
+  return <WalletSelector ></WalletSelector>;
 }

@@ -26,7 +26,7 @@ export class AptosBalanceTool extends Tool {
 
 			return JSON.stringify({
 				status: "success",
-				balance,
+				content:balance,
 				token: {
 					name: mintDetails.name || "APT",
 					decimals: mintDetails.decimals || 8,

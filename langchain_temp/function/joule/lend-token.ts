@@ -41,7 +41,7 @@ export class JouleLendTokenTool extends Tool {
 
 			return JSON.stringify({
 				status: "success",
-				lendTokenTransactionHash,
+				inputdata:lendTokenTransactionHash,
 				token: {
 					name: mintDetail.name,
 					decimals: mintDetail.decimals,

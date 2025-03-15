@@ -3,16 +3,21 @@ import {
   Aptos,
   AptosConfig,
   type MoveStructId,
-  Network,
+  Network, TypeTag
 } from "@aptos-labs/ts-sdk";
 import { AptosPriceServiceConnection } from "@pythnetwork/pyth-aptos-js";
+
 import { priceFeed } from "./constants/price-feed";
 import type { BaseSigner } from "./signers";
 import {
   borrowToken,
   burnNFT,
   burnToken,
-  createToken, get_daily_active_account,
+  createToken,
+  get_aptos_average_gas_fee,
+  get_aptos_transaction_success_rate,
+  get_daily_active_account,
+  get_monthly_transaction,
   getBalance,
   getPoolDetails,
   getTokenDetails,
@@ -23,7 +28,7 @@ import {
   lendToken,
   mintToken,
   repayToken,
-  stakeTokens,
+  stakeTokens, swap_emoji,
   transferNFT,
   transferTokens,
   unstakeTokens,
@@ -70,8 +75,12 @@ import {is_frozen} from "./tools/aptos/is_frozen";
 import {chasing_metadata_owner} from "./tools/aptos/chaseing_metadata_owner";
 import {get_aptos_tps} from "./tools/dune/get_aptos_tps";
 import {get_total_user_transaction} from "./tools/dune/get_total_user_transaction";
+import { InputTransactionData } from "@aptos-labs/wallet-adapter-react";
+import { get_monthly_active_account } from "@/langchain_temp/tools/dune/get_monthly_active_account";
+import { create_red_pocket } from "@/langchain_temp/tools/twotag/red_pocket";
+import { analytics_address } from "@/langchain_temp/tools/aptos/analytics_address";
 const aptosConfig = new AptosConfig({
-  network: Network.TESTNET,
+  network: Network.MAINNET,
 });
 
 export class AgentRuntime {
@@ -79,17 +88,20 @@ export class AgentRuntime {
   public aptos: Aptos;
   public config: any;
   public to_address: string;
+  public sign: ((transaction: InputTransactionData) => Promise<any>) | undefined;
 
   constructor(
     account: BaseSigner,
     aptos: Aptos,
     to_address: string,
     config?: any,
+    sign?: ((transaction: InputTransactionData) => Promise<any>)
   ) {
     this.account = account;
     this.aptos = new Aptos(aptosConfig);
     this.config = config ? config : {};
     this.to_address = to_address;
+    this.sign = sign;
   }
 
   async getPythData() {
@@ -421,8 +433,9 @@ export class AgentRuntime {
     return generate_image(prompt, this.to_address);
   }
 
-
-
+  create_red_pocket(red_pocket_amount:number,red_pocet_total:number,message:string,coin:string,key:string){
+    return create_red_pocket(this,red_pocket_amount,red_pocet_total,message,coin,key)
+  }
   //new aptos function
   is_frozen(coin_metadata:string){
     return is_frozen(this,coin_metadata,this.to_address)
@@ -441,5 +454,26 @@ export class AgentRuntime {
   }
   get_daily_active_account(){
     return get_daily_active_account()
+  }
+  get_monthly_active_account(){
+    return get_monthly_active_account()
+  }
+  get_monthly_transaction(){
+    return get_monthly_transaction()
+  }
+  get_aptos_transaction_success_rate(){
+    return get_aptos_transaction_success_rate
+  }
+  get_aptos_average_gas_fee(){
+    return get_aptos_average_gas_fee()
+  }
+
+  analytics_address(target:string){
+    return analytics_address(this,target)
+  }
+
+  //emoji
+  swap_emoji(coin_type_address:TypeTag[],market_address:string,input_amount:number,is_sell:boolean,output_amount:number){
+    return swap_emoji(this,coin_type_address,market_address,input_amount,is_sell,output_amount)
   }
 }
